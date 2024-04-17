@@ -41,7 +41,7 @@ const Sidenav = () => {
     >
       <Box>
         <Heading textAlign="center" fontSize="20px" as="h1" pt="3.5rem">
-          ALI PROEJCT
+          Ali PROEJCT
         </Heading>
         <Box mt="6" mx="3">
           {navLinks.map((nav) => (
