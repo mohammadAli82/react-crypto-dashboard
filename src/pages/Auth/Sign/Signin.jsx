@@ -20,14 +20,9 @@ import { ErrorMessage } from "formik";
 import { object, string, ref } from "yup";
 
 const signinValidationSchema = object({
-  name: string().required("Name is required"),
-  surname: string().required("surname is required"),
   email: string().email("email is invalid").required("email is required"),
   password: string()
     .min(6, "Password must be at least 6 character")
-    .required("password is required"),
-  repeatpassword: string()
-    .oneOf([ref("password"), null], "Password must match")
     .required("password is required"),
 });
 
@@ -90,7 +85,7 @@ function Signin() {
                     <Checkbox>
                       <Text textStyle="p3">Remember me</Text>
                     </Checkbox>
-                    <Link to="/forget-password">
+                    <Link to="/forgetpassword">
                       <Text textStyle="p3" as="span" color="p.purple">
                         Forget Password
                       </Text>
