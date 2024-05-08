@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   Center,
@@ -11,12 +11,15 @@ import {
   Flex,
   Checkbox,
   Button,
+  useToast,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Formik, Form, Field } from "formik";
 import { ErrorMessage } from "formik";
 
 import { object, string, ref } from "yup";
+import { useMutation } from "react-query";
+import { signupUser } from "../../../api/query/userQuery";
 
 const signupValidationSchema = object({
   name: string().required("Name is required"),
@@ -31,6 +34,29 @@ const signupValidationSchema = object({
 });
 
 function Signup() {
+  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
+  const toast = useToast();
+  console.log(email)//
+  const { mutate, isLoading,} = useMutation({
+    mutationKey: ["signup"],
+    mutationFn: signupUser,
+    onSuccess: (data) => {
+      console.log(email)
+      if (email !== "") {
+        navigate("/registerverifyemail", {
+          state: { email },
+        });
+      }
+    },
+    onError: (error) => {
+      toast({
+        title: "Sign up error.",
+        description: error.message,
+        status: "error",
+      });
+    },
+  });
   return (
     <Container>
       <Center minH="100vh">
@@ -50,7 +76,13 @@ function Signup() {
               repeatpassword: "",
             }}
             onSubmit={(values) => {
-              console.log(values);
+              setEmail(values.email);
+              mutate({
+                firstName: values.name,
+                lastName: values.surname,
+                email: values.email,
+                password: values.password,
+              });
             }}
             validationSchema={signupValidationSchema}
           >
@@ -143,7 +175,9 @@ function Signup() {
                       Terms and conditions
                     </Text>
                   </Checkbox>
-                  <Button type="submit">Create Account</Button>
+                  <Button type="submit" isLoading={isLoading}>
+                    Create Account
+                  </Button>
                   <Text textStyle="p" color="black.60">
                     Already Have a account ?{" "}
                     <Link to="/signin">
